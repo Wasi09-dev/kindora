@@ -14,10 +14,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/events", label: "Events" },
+    { href: "/add-event", label: "Add Event" },
 ];
 
 function isActiveLink(pathname, href) {
@@ -41,20 +43,27 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        {/* Left: logo */}
         <Logo />
 
-        {/* Desktop links */}
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+        {/* Center: desktop links in a pill container */}
+        <nav
+          className="hidden items-center gap-5 ml-20 bg-muted/50 p-1 md:flex"
+          aria-label="Main navigation"
+        >
           {navLinks.map((link) => {
             const active = isActiveLink(pathname, link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-                  active ? "bg-muted text-primary" : "text-muted-foreground"
+                  "rounded-full px-5 py-1.5 text-sm font-medium transition-all",
+                  active
+                    ? "bg-background text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {link.label}
@@ -63,76 +72,100 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Desktop buttons */}
-        <div className="hidden items-center gap-2 md:flex">
-          <Link href="/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-            Log in
-          </Link>
-          <Link href="/register" className={buttonVariants({ variant: "outline", size: "sm" })}>
-            Sign Up
-          </Link>
-          <Link href="/events" className={buttonVariants({ size: "sm" })}>
-            Explore Events
-          </Link>
-        </div>
+        {/* Right: theme toggle, desktop buttons, mobile menu */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
 
-        {/* Mobile menu */}
-        <Sheet>
-          <SheetTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                aria-label="Open menu"
-              />
-            }
-          >
-            <Menu className="size-5" aria-hidden="true" />
-          </SheetTrigger>
+          <div className="hidden items-center gap-2 md:flex">
+            <Link
+              href="/login"
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
+            >
+              Log in
+            </Link>
+            <Link
+              href="/register"
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              Register
+            </Link>
+            <Link href="/events" className={buttonVariants({ size: "sm" })}>
+              Explore Events
+            </Link>
+          </div>
 
-          <SheetContent side="right" className="w-72">
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-            </SheetHeader>
+          {/* Mobile menu */}
+          <Sheet>
+            <SheetTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Open menu"
+                />
+              }
+            >
+              <Menu className="size-5" aria-hidden="true" />
+            </SheetTrigger>
 
-            <div className="flex flex-col gap-1 px-4">
-              {navLinks.map((link) => (
+            <SheetContent side="right" className="w-72">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+
+              <div className="flex flex-col gap-1 px-4">
+                {navLinks.map((link) => {
+                  const active = isActiveLink(pathname, link.href);
+                  return (
+                    <SheetClose
+                      key={link.href}
+                      render={
+                        <Link
+                          href={link.href}
+                          className={cn(
+                            "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
+                            active
+                              ? "bg-muted text-primary"
+                              : "text-muted-foreground"
+                          )}
+                        />
+                      }
+                    >
+                      {link.label}
+                    </SheetClose>
+                  );
+                })}
+              </div>
+
+              <div className="mt-auto flex flex-col gap-2 px-4 pb-4">
                 <SheetClose
-                  key={link.href}
                   render={
                     <Link
-                      href={link.href}
-                      className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted"
+                      href="/login"
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "w-full"
+                      )}
                     />
                   }
                 >
-                  {link.label}
+                  Log in
                 </SheetClose>
-              ))}
-            </div>
-
-            <div className="mt-auto flex flex-col gap-2 px-4 pb-4">
-              <SheetClose
-                render={
-                  <Link
-                    href="/login"
-                    className={cn(buttonVariants({ variant: "outline" }), "w-full")}
-                  />
-                }
-              >
-                Log in
-              </SheetClose>
-              <SheetClose
-                render={
-                  <Link href="/signup" className={cn(buttonVariants(), "w-full")} />
-                }
-              >
-                Sign Up
-              </SheetClose>
-            </div>
-          </SheetContent>
-        </Sheet>
+                <SheetClose
+                  render={
+                    <Link
+                      href="/register"
+                      className={cn(buttonVariants(), "w-full")}
+                    />
+                  }
+                >
+                  Register
+                </SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-
+// Google logo (lucide-react does not include one)
 function GoogleIcon() {
   return (
     <svg className="size-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -38,19 +41,39 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
-  function handleSubmit(e) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  
-    console.log({ email, password });
+  // Email and password login
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const { error: authError } = await authClient.signIn.email({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    setLoading(false);
+
+    if (authError) {
+      setError(authError.message || "Login failed. Please try again.");
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
   }
 
-  function handleGoogleLogin() {
-  
-    console.log("Google login clicked");
+  // Google login (creates the account automatically for new users)
+  async function handleGoogleLogin() {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
   }
 
   return (
@@ -64,7 +87,6 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-5">
-     
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -88,19 +110,23 @@ export default function LoginPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Log in
+            {error && (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Log in"}
             </Button>
           </form>
 
-       
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-border" />
             <span className="text-xs text-muted-foreground">OR</span>
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          
           <Button
             type="button"
             variant="outline"
@@ -111,14 +137,13 @@ export default function LoginPage() {
             Sign up with Google
           </Button>
 
-          
           <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="font-medium text-primary hover:underline"
             >
-              Register 
+              Register
             </Link>
           </p>
         </CardContent>

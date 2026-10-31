@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+
 
 // Input with a leading icon (and optional trailing element)
 function IconInput({ icon: Icon, trailing, ...props }) {
@@ -59,18 +61,15 @@ export default function RegisterPage() {
   const hasLength = password.length >= 6;
   const isPasswordValid = hasUpper && hasLower && hasLength;
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isPasswordValid) return;
+    const formData = new FormData(e.target);
+    const user = Object.fromEntries(formData.entries());
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const photo = formData.get("photo");
-
-    // TODO: add Better Auth sign-up logic here
-    console.log({ name, email, photo, password });
-  }
+    const { data, error } = await authClient.signUp.email({
+      ...user,
+    });
+  };
 
   return (
     <section className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">

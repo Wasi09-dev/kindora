@@ -1,7 +1,5 @@
 "use client";
 
-// Login form ("Welcome Back"). Client-only: holds form state, validates the
-// fields, and signs the user in through the demo AuthProvider.
 
 import { ArrowRight, Eye, EyeOff, Heart, Lock, Mail } from "lucide-react";
 import Link from "next/link";
