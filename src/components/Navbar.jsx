@@ -68,7 +68,7 @@ export default function Navbar() {
           <Link href="/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
             Log in
           </Link>
-          <Link href="/signup" className={buttonVariants({ variant: "outline", size: "sm" })}>
+          <Link href="/register" className={buttonVariants({ variant: "outline", size: "sm" })}>
             Sign Up
           </Link>
           <Link href="/events" className={buttonVariants({ size: "sm" })}>
