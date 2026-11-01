@@ -1,66 +1,118 @@
-import { CalendarDays } from "lucide-react";
-import Link from "next/link";
+import { CalendarDays, MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import JoinEventButton from "@/components/JoinEventButton";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+// Fetch all events from the Express server
+async function getEvents() {
+  try {
+    const res = await fetch("http://localhost:5000/events", {
+      // Always get fresh data so new events show up
+      cache: "no-store",
+    });
 
-export const metadata = {
-  title: "Events",
-  description:
-    "Browse upcoming Kindora social development events — volunteering drives, community cleanups, education campaigns, health camps, and charity fundraisers.",
-};
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (error) {
+    console.error("Failed to load events:", error);
+    return null;
+  }
+}
 
-// Placeholder listing — replace with real event data (cards/grid) later.
-const eventTypes = [
-  "Volunteering Drives",
-  "Community Cleanups",
-  "Education Campaigns",
-  "Health Camps",
-  "Charity Fundraisers",
-];
+// Turns "2026-11-20" into "Nov 20, 2026"
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await getEvents();
+
   return (
-    <section
-      aria-labelledby="events-heading"
-      className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-24 text-center sm:px-6"
-    >
-      <Badge variant="secondary" className="h-7 rounded-full px-3 text-sm">
-        <CalendarDays aria-hidden="true" />
-        Coming Soon
-      </Badge>
+    <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      {/* Page heading */}
+      <div className="mb-10 text-center">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          Upcoming Events
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Find a cause you care about and be part of the change
+        </p>
+      </div>
 
-      <h1
-        id="events-heading"
-        className="text-3xl font-bold tracking-tight sm:text-4xl"
-      >
-        Discover events that need you
-      </h1>
+      {/* Server not reachable */}
+      {events === null && (
+        <p className="text-center text-destructive" role="alert">
+          Could not load events. Make sure the server is running.
+        </p>
+      )}
 
-      <p className="max-w-xl leading-relaxed text-muted-foreground">
-        The Kindora event browser is being built. Soon you'll be able to filter
-        social development events by cause, place, and date:
-      </p>
+      {/* No events yet */}
+      {events && events.length === 0 && (
+        <p className="text-center text-muted-foreground">
+          No events yet. Be the first to add one!
+        </p>
+      )}
 
-      <ul className="flex flex-wrap items-center justify-center gap-2">
-        {eventTypes.map((type) => (
-          <li
-            key={type}
-            className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-muted-foreground"
-          >
-            {type}
-          </li>
-        ))}
-      </ul>
+      {/* Event cards */}
+      {events && events.length > 0 && (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((event) => (
+            <Card key={event._id} className="overflow-hidden pt-0">
+              {/* Event image */}
+              <div className="aspect-video w-full bg-muted">
+                <img
+                  src={event.image}
+                  alt={event.name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
 
-      <Button
-        size="lg"
-        variant="outline"
-        className="mt-4 h-11 px-6 text-base"
-        render={<Link href="/" />}
-      >
-        Back to home
-      </Button>
+              <CardHeader>
+                <Badge variant="secondary" className="w-fit">
+                  {event.type}
+                </Badge>
+                <CardTitle className="text-lg">{event.name}</CardTitle>
+                <CardDescription className="line-clamp-3">
+                  {event.description}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <p className="flex items-center gap-2">
+                  <CalendarDays className="size-4" aria-hidden="true" />
+                  {formatDate(event.date)}
+                </p>
+                <p className="flex items-center gap-2">
+                  <MapPin className="size-4" aria-hidden="true" />
+                  {event.location}
+                </p>
+              </CardContent>
+<CardFooter>
+  <Link
+    href={`/events/${event._id}`}
+    className={buttonVariants({ className: "w-full" })}
+  >
+    Join Event
+  </Link>
+</CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

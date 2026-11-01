@@ -37,28 +37,52 @@ function getTomorrow() {
 export default function AddEventPage() {
   const [minDate, setMinDate] = useState("");
   const [dateError, setDateError] = useState("");
-
+const [status, setStatus] = useState(null);
+const [submitting, setSubmitting] = useState(false);
   // Set the minimum date after the page loads (avoids server/client mismatch)
   useEffect(() => {
     setMinDate(getTomorrow());
   }, []);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const eventData = Object.fromEntries(formData.entries());
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Extra check in case someone bypasses the date picker
-    if (eventData.date < minDate) {
-      setDateError("Please choose a future date.");
-      return;
-    }
-    setDateError("");
+  // Save the form before await (e.currentTarget becomes null afterwards)
+  const form = e.currentTarget;
+  const eventData = Object.fromEntries(new FormData(form).entries());
 
-    // TODO: save the event to the database here
-    console.log(eventData);
+  if (eventData.date < minDate) {
+    setDateError("Please choose a future date.");
+    return;
   }
+  setDateError("");
+  setStatus(null);
+  setSubmitting(true);
 
+  try {
+    const res = await fetch("http://localhost:5000/add-event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+    });
+
+    const data = await res.json();
+
+    if (data.acknowledged) {
+      setStatus({ type: "success", text: "Event published successfully!" });
+      form.reset();
+    } else {
+      setStatus({ type: "error", text: "Something went wrong. Please try again." });
+    }
+  } catch (error) {
+    console.error("Failed to add event:", error);
+    setStatus({ type: "error", text: "Could not reach the server." });
+  } finally {
+    setSubmitting(false);
+  }
+};
   return (
     <section className="flex justify-center px-4 py-12">
       <Card className="w-full max-w-xl">
