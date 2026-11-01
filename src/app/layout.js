@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-
+   import { Suspense } from "react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toast";
@@ -31,7 +31,9 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <Navbar />
+          <Suspense fallback={<div className="h-16 border-b" />}>
+     <Navbar />
+   </Suspense>
         <main className="flex-1">{children}</main>
         <Footer />
         {/* Global toast viewport used by client components (forms, menus…). */}

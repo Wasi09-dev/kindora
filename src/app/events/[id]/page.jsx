@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, MapPin } from "lucide-react";
-
+import EventActions from "@/components/EventActions";
 import JoinEventButton from "@/components/JoinEventButton";
 import { Badge } from "@/components/ui/badge";
 
@@ -97,7 +97,8 @@ export default async function EventDetailPage({ params }) {
 
         {/* Join button with toast */}
         <div className="max-w-xs pt-4">
-          <JoinEventButton eventName={event.name} />
+        <JoinEventButton eventId={event._id} eventName={event.name} />
+          <EventActions eventId={event._id} eventName={event.name} />
         </div>
       </div>
     </section>
