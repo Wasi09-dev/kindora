@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
 
 // Options shown in the event type dropdown
 const eventTypes = [
@@ -41,7 +42,8 @@ function getTomorrow() {
 export default function EventForm({ event }) {
   const router = useRouter();
   const isEdit = Boolean(event);
-
+const { data: session } = authClient.useSession();
+const email = session?.user?.email;
   const [minDate, setMinDate] = useState("");
   const [dateError, setDateError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -58,8 +60,12 @@ export default function EventForm({ event }) {
     // Save the form before await (e.currentTarget becomes null afterwards)
     const form = e.currentTarget;
     const eventData = Object.fromEntries(new FormData(form).entries());
-
-    // A new or changed date must be in the future
+if (!isEdit && !email) {
+  toast.error("Please log in to add an event");
+  router.push("/login");
+  return;
+}
+   
     if (eventData.date !== event?.date && eventData.date < getTomorrow()) {
       setDateError("Please choose a future date.");
       return;
