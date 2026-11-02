@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 
-export default function JoinEventButton({ eventId, eventName }) {
+export default function JoinEventButton({ event }) {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const email = session?.user?.email;
@@ -30,15 +30,15 @@ export default function JoinEventButton({ eventId, eventName }) {
         );
         if (!res.ok) return;
 
-        const events = await res.json();
-        setJoined(events.some((event) => event._id === eventId));
+        const joins = await res.json();
+        setJoined(joins.some((item) => item.eventId === event._id));
       } catch (error) {
         console.error("Failed to check joined status:", error);
       }
     }
 
     checkJoined();
-  }, [email, eventId]);
+  }, [email, event._id]);
 
   async function handleJoin() {
     // Only logged-in users can join an event
@@ -51,18 +51,22 @@ export default function JoinEventButton({ eventId, eventName }) {
     setLoading(true);
 
     try {
+      // Save a copy of the event details with the join.
+      // The event's own _id is removed so every join gets its own _id.
+      const { _id, ...eventData } = event;
+
       const res = await fetch("http://localhost:5000/join-event", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ eventId, userEmail: email }),
+        body: JSON.stringify({ ...eventData, eventId: _id, userEmail: email }),
       });
       const data = await res.json();
 
       if (data.acknowledged) {
         setJoined(true);
-        toast.success(`You joined "${eventName}"!`);
+        toast.success(`You joined "${event.name}"!`);
       } else {
         toast.error(data.message || "Could not join the event");
       }

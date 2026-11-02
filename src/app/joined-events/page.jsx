@@ -119,7 +119,7 @@ export default function JoinedEventsPage() {
 
             <CardFooter>
               <Link
-                href={`/events/${event._id}`}
+             href={`/events/${event.eventId}`}
                 className={buttonVariants({
                   variant: "outline",
                   className: "w-full",

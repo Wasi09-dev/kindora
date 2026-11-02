@@ -97,7 +97,7 @@ export default async function EventDetailPage({ params }) {
 
         {/* Join button with toast */}
         <div className="max-w-xs pt-4">
-        <JoinEventButton eventId={event._id} eventName={event.name} />
+       <JoinEventButton event={event} />
           <EventActions eventId={event._id} eventName={event.name} />
         </div>
       </div>
