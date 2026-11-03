@@ -15,7 +15,7 @@ async function getEvent(id) {
     return { event: null, status: 0 };
   }
 }
-export default async function EditEventPage({ params }) {
+async function EditEventContent({ params }) {
   const { id } = await params;
   const { event, status } = await getEvent(id);
 

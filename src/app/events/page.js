@@ -1,5 +1,5 @@
 import { CalendarDays, MapPin } from "lucide-react";
-
+import { Suspense} from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -38,7 +38,7 @@ function formatDate(dateString) {
   });
 }
 
-export default async function EventsPage() {
+async function EventsPageContent() {
   const events = await getEvents();
 
   return (
@@ -114,5 +114,12 @@ export default async function EventsPage() {
         </div>
       )}
     </section>
+  );
+}
+export default function EventsPage(props) {
+  return (
+    <Suspense fallback={<p className="py-12 text-center text-muted-foreground">Loading events...</p>}>
+      <EventsPageContent params = {props.params} />
+    </Suspense>
   );
 }
