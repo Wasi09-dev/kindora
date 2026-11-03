@@ -5,7 +5,7 @@ import EventForm from "@/components/EventForm";
 // Fetch a single event from the Express server (read only)
 async function getEvent(id) {
   try {
-    const res = await fetch(`http://localhost:5000/events/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`, {
       cache: "no-store",
     });
 

@@ -44,8 +44,8 @@ export default function ManageEventsPage() {
 
     async function loadEvents() {
       try {
-        // Get all events from every user
-        const res = await fetch("http://localhost:5000/events");
+        
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`);
         if (!res.ok) throw new Error("Request failed");
 
         setEvents(await res.json());
@@ -63,7 +63,7 @@ export default function ManageEventsPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/events/${eventToDelete._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/events/${eventToDelete._id}`,
         { method: "DELETE" }
       );
       const data = await res.json();

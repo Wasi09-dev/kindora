@@ -75,8 +75,8 @@ if (!isEdit && !email) {
 
     try {
       const url = isEdit
-        ? `http://localhost:5000/events/${event._id}`
-        : "http://localhost:5000/add-event";
+        ? `${process.env.NEXT_PUBLIC_API_URL}/${event._id}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/add-event`;
 
       const res = await fetch(url, {
         method: isEdit ? "PUT" : "POST",

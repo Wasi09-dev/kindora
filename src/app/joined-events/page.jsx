@@ -40,7 +40,7 @@ export default function JoinedEventsPage() {
     async function loadJoinedEvents() {
       try {
         const res = await fetch(
-          `http://localhost:5000/joined-events?email=${encodeURIComponent(email)}`
+          `${process.env.NEXT_PUBLIC_API_URL}/joined-events?email=${encodeURIComponent(email)}`
         );
         if (!res.ok) throw new Error("Request failed");
 

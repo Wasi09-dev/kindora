@@ -15,7 +15,7 @@ import { buttonVariants } from "@/components/ui/button";
 // Fetch all events from the Express server
 async function getEvents() {
   try {
-    const res = await fetch("http://localhost:5000/events", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
       // Always get fresh data so new events show up
       cache: "no-store",
     });

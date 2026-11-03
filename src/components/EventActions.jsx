@@ -29,7 +29,7 @@ export default function EventActions({ eventId, eventName }) {
     setDeleting(true);
 
     try {
-      const res = await fetch(`http://localhost:5000/events/${eventId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${eventId}`, {
         method: "DELETE",
       });
       const data = await res.json();

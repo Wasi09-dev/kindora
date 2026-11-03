@@ -55,7 +55,7 @@ export default function JoinEventButton({ event }) {
       // The event's own _id is removed so every join gets its own _id.
       const { _id, ...eventData } = event;
 
-      const res = await fetch("http://localhost:5000/join-event", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/join-event`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
