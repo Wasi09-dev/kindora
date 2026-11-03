@@ -14,7 +14,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-
+trustedOrigins: ["https://kindora-git-main-wasi09-dev.vercel.app",
+  "https://*vercel.app"
+],       
  
   socialProviders: {
     google: {
