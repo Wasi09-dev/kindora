@@ -113,7 +113,7 @@ async function EventDetails({ params }) {
   );
 }
 
-export default function EventDetailPage({ params }) {
+export default function EventDetailPage() {
   return (
     <Suspense
       fallback={
@@ -122,7 +122,7 @@ export default function EventDetailPage({ params }) {
         </p>
       }
     >
-      <EventDetails params={params} />
+      <EventDetails/>
     </Suspense>
   );
 }
