@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
 
 import EventForm from "@/components/EventForm";
+import { Suspense } from "react";
 
-// Fetch a single event from the Express server (read only)
 async function getEvent(id) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`, {
       cache: "no-store",
     });
-
     if (!res.ok) return { event: null, status: res.status };
     return { event: await res.json(), status: 200 };
   } catch (error) {
@@ -16,7 +15,6 @@ async function getEvent(id) {
     return { event: null, status: 0 };
   }
 }
-
 export default async function EditEventPage({ params }) {
   const { id } = await params;
   const { event, status } = await getEvent(id);
@@ -37,3 +35,11 @@ export default async function EditEventPage({ params }) {
 
   return <EventForm event={event} />;
 }
+export default function EditEventPage({ params }) {
+  return ( 
+    <Suspense fallback={<p className="text-center text-muted-foreground">Loading...</p>}>
+      <EditEventContent params={params} />
+    </Suspense>
+  );
+} 
+  
