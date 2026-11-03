@@ -1,9 +1,8 @@
 import { CalendarDays, HandHeart, MapPin, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {  buttonVariants } from "@/components/ui/button";
 
 // Small impact numbers shown below the call-to-action buttons.
 const stats = [
@@ -57,17 +56,12 @@ export default function Banner() {
           </p>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-           <Button nativeButton={false} render={<Link href="/events" />}>
-  Explore Events
-</Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-11 px-6 text-base"
-              render={<Link href="#newsletter" />}
-            >
-              Learn More
-            </Button>
+            <Link href="/events" className={buttonVariants({ size: "lg" })}>
+     Explore Events
+   </Link>
+              <Link href="#" className={buttonVariants({ variant: "outline", size: "lg" })}>
+     Learn More
+   </Link>
           </div>
 
           {/* Impact stats */}
