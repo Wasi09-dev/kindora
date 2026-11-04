@@ -14,9 +14,9 @@ async function getEvent(id, token) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`, {
       cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      
+        
+      
     });
 
     if (!res.ok) return { event: null, status: res.status };

@@ -58,8 +58,7 @@ export default function JoinEventButton({ event }) {
     setLoading(true);
 
     try {
-      const { data: tokenData } = await authClient.token();
-
+      
       // Save a copy of the event details with the join.
       // The event's own _id is removed so every join gets its own _id.
       const { _id, ...eventData } = event;
@@ -68,7 +67,6 @@ export default function JoinEventButton({ event }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenData?.token}`,
         },
         body: JSON.stringify({ ...eventData, eventId: _id, userEmail: email }),
       });

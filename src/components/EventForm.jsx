@@ -82,8 +82,7 @@ const { data: tokenData } = await authClient.token();
         method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenData?.token}`,
-    
+        
         },
         body: JSON.stringify(eventData),
       });

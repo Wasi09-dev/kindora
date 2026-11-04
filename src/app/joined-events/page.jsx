@@ -44,9 +44,8 @@ export default function JoinedEventsPage() {
           `${process.env.NEXT_PUBLIC_API_URL}/joined-events?email=${encodeURIComponent(email)}`
         
         , {
-          headers: {
-            Authorization: `Bearer ${tokenData?.token}`,
-          },
+      
+          
         });
         if (!res.ok) throw new Error("Request failed");
 
