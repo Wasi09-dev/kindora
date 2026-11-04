@@ -75,14 +75,13 @@ if (!isEdit && !email) {
 
     try {
       const url = isEdit
-        ? `${process.env.NEXT_PUBLIC_API_URL}/${event._id}`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/events/${event._id}`
         : `${process.env.NEXT_PUBLIC_API_URL}/add-event`;
-const { data: tokenData } = await authClient.token();
+
       const res = await fetch(url, {
         method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
-        
         },
         body: JSON.stringify(eventData),
       });
