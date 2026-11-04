@@ -39,9 +39,15 @@ export default function JoinedEventsPage() {
 
     async function loadJoinedEvents() {
       try {
+        const { data: tokenData } = await authClient.token();
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/joined-events?email=${encodeURIComponent(email)}`
-        );
+        
+        , {
+          headers: {
+            Authorization: `Bearer ${tokenData?.token}`,
+          },
+        });
         if (!res.ok) throw new Error("Request failed");
 
         setEvents(await res.json());

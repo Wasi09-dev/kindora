@@ -25,8 +25,15 @@ export default function JoinEventButton({ event }) {
 
     async function checkJoined() {
       try {
+        const { data: tokenData } = await authClient.token();
+
         const res = await fetch(
-          `http://localhost:5000/joined-events?email=${encodeURIComponent(email)}`
+          `${process.env.NEXT_PUBLIC_API_URL}/joined-events?email=${encodeURIComponent(email)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenData?.token}`,
+            },
+          }
         );
         if (!res.ok) return;
 
@@ -51,6 +58,8 @@ export default function JoinEventButton({ event }) {
     setLoading(true);
 
     try {
+      const { data: tokenData } = await authClient.token();
+
       // Save a copy of the event details with the join.
       // The event's own _id is removed so every join gets its own _id.
       const { _id, ...eventData } = event;
@@ -59,6 +68,7 @@ export default function JoinEventButton({ event }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenData?.token}`,
         },
         body: JSON.stringify({ ...eventData, eventId: _id, userEmail: email }),
       });
